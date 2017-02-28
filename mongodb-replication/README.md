@@ -40,3 +40,5 @@ Repeat for the secondaries, reachable via the host names `mongo2` and `mongo3`.
 
 To see the logs, simply exit the mongo shell and type:
     > docker-compose logs
+or for output of a specific container:
+    > docker-compose logs mongo1
