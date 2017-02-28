@@ -1,0 +1,63 @@
+# This will boot 4 containers: 3 mongo as a cluster, and 1 to issue mongo commands to others
+#
+
+mongo3:
+  image: mongo:3.4.2
+  hostname: mongo3
+  container_name: mongo3
+  ports:
+    - "27020:27017"
+  expose:
+    - "27020"
+    - "27017"
+    - "28017"
+  volumes:
+    - ./data/mongo3:/data/mongo3
+  restart: always
+  entrypoint: [ "/usr/bin/mongod", "--replSet", "rs", "--rest", "--httpinterface", "--dbpath", "/data/mongo3" ]
+
+mongo2:
+  image: mongo:3.4.2
+  hostname: mongo2
+  container_name: mongo2
+  ports:
+    - "27019:27017"
+  expose:
+    - "27017"
+    - "27019"
+    - "28017"
+  volumes:
+    - ./data/mongo2:/data/mongo2
+  restart: always
+  entrypoint: [ "/usr/bin/mongod", "--replSet", "rs", "--rest", "--httpinterface", "--dbpath", "/data/mongo2" ]
+
+mongo1:
+  image: mongo:3.4.2
+  hostname: mongo1
+  container_name: mongo1
+  ports:
+    - "27018:27017"  
+  expose:
+    - "27017"
+    - "27018"
+    - "28017"
+  links:
+    - mongo2:mongo2
+    - mongo3:mongo3
+  volumes:
+    - ./data/mongo1:/data/mongo1
+  restart: always
+  entrypoint: [ "/usr/bin/mongod", "--replSet", "rs", "--rest", "--httpinterface", "--dbpath", "/data/mongo1" ]
+
+mongosetup:
+  # We could use "image: mongo:3.4.2", but re-use the one
+  # build in the "mongodb-basics" part, to have sample data
+  image: mongo-cmd
+  container_name: mongo-cmd
+  links:
+    - mongo1:mongo1
+    - mongo2:mongo2
+    - mongo3:mongo3
+  volumes:
+    - ./scripts:/scripts
+  entrypoint: [ "bash", "/scripts/initiate.sh" ]
