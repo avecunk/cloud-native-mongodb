@@ -37,3 +37,13 @@ Check the status of the replica-set:
     > rs.status()
 
 Repeat for the secondaries, reachable via the host names `mongo2` and `mongo3`.
+
+### Viewing the cluster logs
+
+To see follow the logs of the cluster, exit the mongo shell and type:
+
+    $ docker-compose logs
+
+Or, for the logs of only a specific container:
+
+    $ docker-compose logs mongo1
