@@ -110,3 +110,34 @@ If you immediately issue a find, all documents are returned:
     > db.restaurantVisits.find()
 
 After waiting a few more seconds, they disappear one by one if you repeat the `.find()` query.
+
+## Using fulltext search
+
+Try to do a fulltext search:
+
+    > db.restaurants.find({ $text: { $search: "Domino" } })
+    # Error!
+
+That won't work - we need to create a fulltext index first:
+
+    > db.restaurants.createIndex( { name: "text" }, { name: "naive_fulltext" } )
+
+Now we can search:
+
+    > db.restaurants.find({ $text: {$search: "Sushi" } })
+
+Nice, lots of results. But can we also find Filipino food via fulltext search?
+
+    > db.restaurants.find({ $text: {$search: "Filipino" } })
+
+No results? Lets add all the text fields of the document to the index, via the `$**` wildcard operator 
+(for that, we need to drop the existing index first, as there can only be one fulltext index per collection):
+
+    > db.restaurants.dropIndex("naive_fulltext")
+    > db.restaurants.createIndex({ "$**": "text" })
+
+Now, we should be able to find Filipino food, too:
+
+    > db.restaurants.find({ $text: {$search: "Filipino" } })
+
+Fulltext indexes support a lot more options, like weighting individual fields, or specifying a language.
