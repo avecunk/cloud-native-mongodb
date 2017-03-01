@@ -16,7 +16,7 @@
 
 We'll learn further below, what `userAdminAnyDatabase` means.
 
-### Try to connect without authenticating"
+### Try to connect without authenticating
 
     $ docker exec -it secure-mongo mongo
 
