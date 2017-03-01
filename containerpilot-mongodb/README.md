@@ -1,6 +1,6 @@
 # AutoPilot Pattern MongoDB
 
-*A robust and highly-scalable implementation of MongoDB in Docker using the Autopilot Pattern*
+*A robust and highly-scalable implementation of MongoDB in Docker using the [Autopilot Pattern](http://autopilotpattern.io/)*
 
 ## Architecture
 
@@ -16,9 +16,15 @@ parameters. Full documentation is on the Joyent website: https://www.joyent.com/
 
 ## Running the cluster
 
-Starting a new cluster is easy once you have [your `_env` file set with the configuration details](#configuration)
+Starting a new cluster:
 
+    # create an empty _env file, you could set environment variables here
+    $ touch _env
+
+    # start the cluster
     $ docker-compose up -d
+
+    # tail the logs of the cluster
     $ docker-compose logs -f
 
 In a few moments you'll have a running MongoDB ready for a replica set. Both the master and replicas are described as a single `docker-compose` service. During startup, [ContainerPilot](http://containerpilot.io) will ask Consul if an existing master has been created. If not, the node will initialize as a new MongoDB replica set and all future nodes will be added to the replica set by the current master. All master election is handled by [MongoDB itself](https://docs.mongodb.com/manual/core/replica-set-elections/) and the result is cached in Consul.
@@ -28,7 +34,7 @@ In a few moments you'll have a running MongoDB ready for a replica set. Both the
 - Insert some data:
 
   ```
-  $ docker run -it --rm --link containerpilotmongodb_mongodb_2:mongodb mongo mongo mongodb:27017
+  $ docker run -it --rm --link containerpilotmongodb_mongodb_1:mongodb mongo mongo mongodb:27017
   pilot:PRIMARY> db.createCollection("burgers")
   pilot:PRIMARY> db.burgers.insert({name: "Big Mac", meat: "beef", tastiness: 5})
   pilot:PRIMARY> db.burgers.insert({name: "Whopper", meat: "beef", tastiness: 7})
@@ -68,14 +74,14 @@ In a few moments you'll have a running MongoDB ready for a replica set. Both the
 - Remove the replica added last to force a new leader election:
   
   ```
-  $ docker-compose scale mongodb=2
+  $ docker-compose scale --timeout 120 mongodb=2
   $ docker run -it --rm --link containerpilotmongodb_mongodb_2:mongodb mongo mongo mongodb:27017
   pilot:PRIMARY> rs.status()
   ```
   You should now see that the second replica became `PRIMARY`.
 
 
-Example session:
+### Example session:
 
 ```
 mongodb_1  | 2017/02/23 17:17:49 2017-02-23 17:17:49,511 INFO manage.py updating replica config in mongo from consul info
@@ -90,7 +96,7 @@ mongodb_3  | 2017/02/23 17:18:56 2017-02-23 17:18:56,915 INFO manage.py Mongo or
 mongodb_3  | 2017/02/23 17:18:58 2017-02-23 17:18:58,440 INFO manage.py primary elected: (u'172.17.0.5', 27017)
 ```
 
-- Browse the Consul UI
+You can also browse the Consul UI to look at how ContainerPilot maintains state:
 
   Set up an SSH tunnel.
   ```
@@ -101,7 +107,7 @@ mongodb_3  | 2017/02/23 17:18:58 2017-02-23 17:18:58,440 INFO manage.py primary 
 
 ## Current limitations
 
-- Removing another primary now will break the setup work: The current implementation of `manage.py` can't reliably clean-up stale replicas when there's no primary anymore
+- Removing another primary now will break the setup: The current implementation of `manage.py` can't reliably clean-up stale replicas when there's no primary anymore.
 - Data backups / snapshots are not implemented, yet.
 
 ## Advanced Configuration
