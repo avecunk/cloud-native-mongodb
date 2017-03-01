@@ -74,7 +74,7 @@ In a few moments you'll have a running MongoDB ready for a replica set. Both the
 - Remove the replica added last to force a new leader election:
   
   ```
-  $ docker-compose scale mongodb=2
+  $ docker-compose scale --timeout 120 mongodb=2
   $ docker run -it --rm --link containerpilotmongodb_mongodb_2:mongodb mongo mongo mongodb:27017
   pilot:PRIMARY> rs.status()
   ```
