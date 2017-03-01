@@ -8,10 +8,6 @@ Create data folders for the replicas:
 
     $ ./init.sh
 
-Install `docker-compose`:
-
-    $ sudo apt-get install docker-compose -y
-
 ## Initialize the replica set
 
     $ docker-compose up -d
