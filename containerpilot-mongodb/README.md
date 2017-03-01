@@ -1,6 +1,6 @@
 # AutoPilot Pattern MongoDB
 
-*A robust and highly-scalable implementation of MongoDB in Docker using the Autopilot Pattern*
+*A robust and highly-scalable implementation of MongoDB in Docker using the [Autopilot Pattern](http://autopilotpattern.io/)*
 
 ## Architecture
 
@@ -75,7 +75,7 @@ In a few moments you'll have a running MongoDB ready for a replica set. Both the
   You should now see that the second replica became `PRIMARY`.
 
 
-Example session:
+### Example session:
 
 ```
 mongodb_1  | 2017/02/23 17:17:49 2017-02-23 17:17:49,511 INFO manage.py updating replica config in mongo from consul info
@@ -90,7 +90,7 @@ mongodb_3  | 2017/02/23 17:18:56 2017-02-23 17:18:56,915 INFO manage.py Mongo or
 mongodb_3  | 2017/02/23 17:18:58 2017-02-23 17:18:58,440 INFO manage.py primary elected: (u'172.17.0.5', 27017)
 ```
 
-- Browse the Consul UI
+You can also browse the Consul UI to look at how ContainerPilot maintains state:
 
   Set up an SSH tunnel.
   ```
@@ -101,7 +101,7 @@ mongodb_3  | 2017/02/23 17:18:58 2017-02-23 17:18:58,440 INFO manage.py primary 
 
 ## Current limitations
 
-- Removing another primary now will break the setup work: The current implementation of `manage.py` can't reliably clean-up stale replicas when there's no primary anymore
+- Removing another primary now will break the setup: The current implementation of `manage.py` can't reliably clean-up stale replicas when there's no primary anymore.
 - Data backups / snapshots are not implemented, yet.
 
 ## Advanced Configuration
