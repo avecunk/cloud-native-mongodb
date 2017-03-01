@@ -11,6 +11,6 @@
   "license": "MIT",
   "dependencies": {
     "mongodb": "^2.2.24",
-    "express": "^4.14.1",
+    "express": "^4.14.1"
   }
 }
