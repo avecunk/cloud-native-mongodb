@@ -7,7 +7,7 @@ We create a fresh MongoDB and a container to connect from and interact with it
     $ docker run --name advanced-mongo -d mongo
 
     # We use the cmd container we created in *mongodb-basics* to interact:
-    $ docker run -it --link advanced-mongo:mongodb -v `pwd`/models:/models --rm mongo-cmd bash
+    $ docker run -it --link advanced-mongo:mongodb --rm mongo-cmd bash
     
     # inside the container:
     $ mongoimport -h mongodb --db test --collection restaurants --drop --file /sampledata/primer-dataset.json
