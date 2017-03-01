@@ -98,18 +98,20 @@ This can be useful for log-type collections.
 
     > db.restaurantVisits.createIndex( { "visited": 1 }, { expireAfterSeconds: 60 } )
     
-Create a few entries with 5 seconds between them:
+Create a few entries with a few minutes between the values of a date field:
 
+    > let visited = new ISODate()
     > ["Urs", "Beat", "Hans", "Roger"].forEach(function(name) {
-        db.restaurantVisits.insert({ name: name, visited: new ISODate() })
-        sleep(5000)
+        visited.setMinutes(visited.getMinutes() + 2);
+        db.restaurantVisits.insert({ name: name, visited: visited });
     })
 
 If you immediately issue a find, all documents are returned:
 
     > db.restaurantVisits.find()
 
-After waiting a few more seconds, they disappear one by one if you repeat the `.find()` query.
+After waiting a few minutes, they disappear one by one if you repeat the `.find()` query.
+The expiration by TTL is not accurate to the second, events that should be expired might linger around for more than a minute.
 
 ## Using fulltext search
 
