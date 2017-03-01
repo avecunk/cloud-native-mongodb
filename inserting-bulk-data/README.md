@@ -201,7 +201,7 @@ Unlike MySQL, no fancy options to specify delimiters etc. You need to format you
 
 We use the website of New York to get some data on their social media usage
 
-    $ wget https://data.cityofnewyork.us/api/views/5b3a-rs48/rows.csv?accessType=DOWNLOAD
+    $ wget -O NYC_Social_Media_Usage.csv https://data.cityofnewyork.us/api/views/5b3a-rs48/rows.csv?accessType=DOWNLOAD
     $ docker run --rm -it -v `pwd`:/import --link insert-demo:mongodb mongo bash
 
     # inside the container
