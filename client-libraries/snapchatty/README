@@ -1,0 +1,8 @@
+Build and run:
+
+    docker build -t snapchatty .
+    docker run -p 3000:3000 -it --rm --link test-mongo:mongodb snapchatty
+    curl -X POST -d 'Hi there' localhost:3000
+    curl localhost:3000
+
+Hint: Replace "localhost" with the IP of your docker setup if you use docker-machine
